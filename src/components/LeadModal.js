@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'react-feather';
 
 function LeadModal({ isOpen, closeModal }) {
+  // Define the initial state with an object for checkboxes
   const [leadData, setLeadData] = useState({
     nome: '',
     email: '',
@@ -44,12 +45,10 @@ function LeadModal({ isOpen, closeModal }) {
   };
 
   const handleAddLead = () => {
-    // Validate the data if needed
 
-    // Add the new lead to the list of leads
     setLeads([...leads, leadData]);
 
-    // Clear the fields
+
     setLeadData({
       nome: '',
       email: '',
@@ -171,18 +170,18 @@ function LeadModal({ isOpen, closeModal }) {
               </label>
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="content-end">
+            <button
+              onClick={closeModal}
+              className="bg-gray-300 hover-bg-gray-400 text-gray-700 font-semibold py-2 px-3 rounded w-24 mr-2"
+            >
+              Cancelar
+            </button>
             <button
               onClick={handleAddLead}
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-3 rounded w-24"
             >
-              Cadastrar
-            </button>
-            <button
-              onClick={closeModal}
-              className="bg-gray-300 hover-bg-gray-400 text-gray-700 font-semibold py-2 px-3 rounded w-24"
-            >
-              Cancelar
+              Salvar
             </button>
           </div>
         </div>
@@ -192,4 +191,3 @@ function LeadModal({ isOpen, closeModal }) {
 }
 
 export default LeadModal;
-

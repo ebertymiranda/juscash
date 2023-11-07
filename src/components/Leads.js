@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LeadModal from './LeadModal';
+import Logo from './logo-white.svg';
 
 function Leads() {
   const navigate = useNavigate();
@@ -90,7 +91,9 @@ function Leads() {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Leads</h2>
+        <h2 className="text-2xl font-semibold">
+          <img className="mx-auto" src={Logo} alt="Logotipo" />
+        </h2>
         <button
           onClick={openModal}
           className="bg-blue-500 hover-bg-blue-600 text-white font-semibold py-2 px-4 rounded"
