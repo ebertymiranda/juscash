@@ -31,6 +31,7 @@ function LoginScreen() {
       
         if (emailUsuario === usuario.email && senhaUsuario === usuario.senha) {
           loginBemSucedido = true;
+          localStorage.setItem("isAuthenticated", "true");
           break;
         }
       }

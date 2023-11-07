@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LeadModal from './LeadModal';
 
 function Leads() {
+  const navigate = useNavigate();
+  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  
+  
   const [columns, setColumns] = useState([
     { id: 1, title: 'Cliente Potencial', items: ['Eberty'] },
     { id: 2, title: 'Dados Confirmados', items: [] },
