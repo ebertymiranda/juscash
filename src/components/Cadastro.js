@@ -82,7 +82,7 @@ function Cadastro() {
       confirmacaoSenha: '',
     });
 
-    navigate('/login');
+    navigate('/');
   };
 
   const openModal = () => {
