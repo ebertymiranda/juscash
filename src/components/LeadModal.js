@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'react-feather';
 
-function LeadModal({ isOpen, closeModal, addLead }) {
+function LeadModal({ isOpen, closeModal }) {
   const [leadData, setLeadData] = useState({
     nome: '',
     email: '',
@@ -14,6 +14,15 @@ function LeadModal({ isOpen, closeModal, addLead }) {
       creditoAutor: false,
     },
   });
+
+  const [leads, setLeads] = useState(() => {
+    const savedLeads = localStorage.getItem('leads');
+    return savedLeads ? JSON.parse(savedLeads) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('leads', JSON.stringify(leads));
+  }, [leads]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,12 +44,12 @@ function LeadModal({ isOpen, closeModal, addLead }) {
   };
 
   const handleAddLead = () => {
-    // Valide os dados do novo lead, se necessário
+    // Validate the data if needed
 
-    // Adicione o novo lead à lista de leads
-    addLead(leadData);
+    // Add the new lead to the list of leads
+    setLeads([...leads, leadData]);
 
-    // Limpe os campos
+    // Clear the fields
     setLeadData({
       nome: '',
       email: '',
@@ -54,13 +63,13 @@ function LeadModal({ isOpen, closeModal, addLead }) {
       },
     });
 
-    // Feche o modal
+    // Close the modal
     closeModal();
   };
 
   const overlayStyle = {
     display: isOpen ? 'block' : 'none',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semitransparente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semitransparent background
   };
 
   return (
@@ -183,3 +192,4 @@ function LeadModal({ isOpen, closeModal, addLead }) {
 }
 
 export default LeadModal;
+

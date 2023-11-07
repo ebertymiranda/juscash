@@ -11,16 +11,37 @@ function Leads() {
     }
   }, [isAuthenticated, navigate]);
 
-  
-  
-  const [columns, setColumns] = useState([
-    { id: 1, title: 'Cliente Potencial', items: ['Eberty'] },
-    { id: 2, title: 'Dados Confirmados', items: [] },
-    { id: 3, title: 'Análise de Leads', items: [] },
-  ]);
+  const [columns, setColumns] = useState(() => {
+    const savedColumns = localStorage.getItem('columns');
+    if (savedColumns) {
+      return JSON.parse(savedColumns);
+    }
+    return [
+      { id: 1, title: 'Cliente Potencial', items: [] },
+      { id: 2, title: 'Dados Confirmados', items: [] },
+      { id: 3, title: 'Análise de Leads', items: [] },
+    ];
+  });
 
   const [draggedItem, setDraggedItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [movedItems, setMovedItems] = useState(new Set()); // Estado para controlar os nomes movidos
+
+  useEffect(() => {
+    const savedLeads = localStorage.getItem('leads');
+    if (savedLeads) {
+      const leadsData = JSON.parse(savedLeads);
+      const clientPotencialItems = leadsData.map((lead) => lead.nome);
+      setColumns((prevColumns) => {
+        const updatedColumns = [...prevColumns];
+        // Verifica se a coluna "Cliente Potencial" está vazia antes de adicionar nomes
+        if (updatedColumns[0].items.length === 0) {
+          updatedColumns[0].items = clientPotencialItems;
+        }
+        return updatedColumns;
+      });
+    }
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -31,8 +52,12 @@ function Leads() {
   };
 
   const onDragStart = (e, item, columnIndex) => {
-    e.dataTransfer.setData('text/plain', JSON.stringify({ item, columnIndex }));
-    setDraggedItem({ item, columnIndex });
+    if (columnIndex === 1 || columnIndex === 2) {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ item, columnIndex }));
+      setDraggedItem({ item, columnIndex });
+    } else {
+      e.preventDefault();
+    }
   };
 
   const onDragOver = (e, columnIndex) => {
@@ -44,12 +69,20 @@ function Leads() {
 
     if (draggedItem) {
       const { item, columnIndex } = draggedItem;
-      if (columnIndex !== targetColumnIndex) {
+
+      if (
+        (columnIndex === 1 && targetColumnIndex === 2) ||
+        (columnIndex === 2 && targetColumnIndex === 3)
+      ) {
         const updatedColumns = [...columns];
         updatedColumns[columnIndex - 1].items = updatedColumns[columnIndex - 1].items.filter((i) => i !== item);
         updatedColumns[targetColumnIndex - 1].items = [...updatedColumns[targetColumnIndex - 1].items, item];
         setColumns(updatedColumns);
         setDraggedItem(null);
+        movedItems.add(item);
+        setMovedItems(new Set(movedItems));
+        // Salvar as colunas no localStorage
+        localStorage.setItem('columns', JSON.stringify(updatedColumns));
       }
     }
   };
@@ -60,7 +93,7 @@ function Leads() {
         <h2 className="text-2xl font-semibold">Leads</h2>
         <button
           onClick={openModal}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          className="bg-blue-500 hover-bg-blue-600 text-white font-semibold py-2 px-4 rounded"
         >
           + Novo Lead
         </button>
